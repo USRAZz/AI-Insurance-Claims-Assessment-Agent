@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+.env
+AI_Claims_Assessment/data/cases.db
