@@ -29,3 +29,9 @@ flagged/
 .cursor/
 .DS_Store
 Thumbs.db
+.env
+__pycache__/
+*.pyc
+*.db
+.pytest_cache/
+.venv/
