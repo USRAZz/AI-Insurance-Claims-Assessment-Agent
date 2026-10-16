@@ -52,6 +52,8 @@ class PolicyEvidence(BaseModel):
     coverage_limit: float = Field(ge=0)
     deductible: float = Field(ge=0)
     exclusions_matched: list[str] = Field(default_factory=list)
+    estimated_insurer_share: Optional[float] = None
+    estimated_customer_share: Optional[float] = None
 
 
 class HistoryEvidence(BaseModel):
