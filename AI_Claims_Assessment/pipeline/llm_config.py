@@ -1,22 +1,51 @@
 """
-llm_config.py: shared LLM settings for all pipeline agents (new small helper file).
-
-- loads the OpenAI key from .env
-- one place to change the model
-- output_schema(): tells the SDK to use a non-strict JSON schema. Pydantic still
-  validates every output, but our extra rules (min_length, > 0 ...) are allowed.
+Shared Gemini configuration for all pipeline agents.
 """
 
 import os
+from pathlib import Path
 
-from agents import AgentOutputSchema, ModelSettings
 from dotenv import load_dotenv
+from agents import (
+    AgentOutputSchema,
+    ModelSettings,
+    AsyncOpenAI,
+    OpenAIChatCompletionsModel,
+    set_tracing_disabled,
+    set_default_openai_api,
+    set_default_openai_client,
+)
 
-load_dotenv()
+# Load environment variables
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
-MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+# Get Gemini API key
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not GEMINI_API_KEY:
+    raise ValueError("GEMINI_API_KEY not found in .env file")
+
+# Configure Gemini using its OpenAI-compatible API
+client = AsyncOpenAI(
+    api_key=GEMINI_API_KEY,
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+)
+
+set_default_openai_client(client)
+set_default_openai_api("chat_completions")
+
+# Disable OpenAI tracing when using Gemini
+set_tracing_disabled(True)
+
+# Gemini model
+MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+
 MODEL_SETTINGS = ModelSettings(temperature=0)
 
 
 def output_schema(model_class):
-    return AgentOutputSchema(model_class, strict_json_schema=False)
+    return AgentOutputSchema(
+        model_class,
+        strict_json_schema=False,
+    )

@@ -13,7 +13,7 @@ One click on "Assess claim" runs the whole pipeline:
 The app never approves or rejects a claim. A human adjuster always decides.
 """
 
-import llm_config  # noqa: F401  (must be first: loads .env and configures Gemini)
+from pipeline import llm_config  # noqa: F401
 
 import json
 import os
